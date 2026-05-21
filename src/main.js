@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { authenticate } from './discord/auth.js';
 import { initHud, refreshMe, loadCrimes, setState } from './ui/hud.js';
+import { BootScene } from './scenes/BootScene.js';
 import { HubScene } from './scenes/HubScene.js';
 import { mountTouchControls, isTouchDevice, isDiscordMobile } from './input/touch.js';
 
@@ -34,11 +35,20 @@ async function boot() {
       parent: 'game',
       width: 768,
       height: 576,
-      backgroundColor: '#0f0f18',
-      scene: [HubScene],
+      backgroundColor: '#080810',
+      scene: [BootScene, HubScene],
+      render: {
+        antialias: true,
+        pixelArt: false,
+        roundPixels: true
+      },
       scale: {
         mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH
+      },
+      fps: {
+        target: 60,
+        forceSetTimeOut: true
       },
       input: {
         activePointers: 2,
