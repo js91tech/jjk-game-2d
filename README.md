@@ -32,7 +32,29 @@ cp .env.example .env
 npm run dev
 ```
 
-Open http://localhost:5173 — move with **WASD**, use HUD buttons or walk to purple zones and press **E**.
+Open http://localhost:5173 — desktop: **WASD** + **E**; phone: **joystick** + **Interact** + tap purple zones.
+
+## Play on Discord mobile
+
+Discord Activities run on **iOS and Android** in voice channels (rocket icon → your Activity).
+
+Requirements:
+
+1. **HTTPS** hosted `dist/` (not `http://localhost` on phone).
+2. Activity URL set in Developer Portal → **Activities** → URL Mapping.
+3. Same `VITE_DISCORD_CLIENT_ID` as bot; API `ACTIVITY_ORIGINS` must include your activity domain.
+4. **Touch UI** is automatic (joystick + 44px buttons + safe-area insets).
+
+Mobile controls:
+
+| Control | Action |
+|---------|--------|
+| Left joystick | Move sorcerer |
+| **Interact** button | Use nearest purple zone |
+| Tap purple zone | Train / mission / gate directly |
+| HUD buttons | Train, mission, work (large touch targets) |
+
+Tip: Collapse Discord keyboard if it steals space; use joystick not chat while playing.
 
 ## Discord Activity setup
 

@@ -63,7 +63,7 @@ function renderHud() {
         <button data-action="escape-pay">Pay bail / bill</button>
         <button data-action="escape-ce">CE heal</button>
       </div>` : ''}
-      <p class="hint">WASD move · Same save as Discord bot</p>
+      <p class="hint">${document.body.classList.contains('touch-mode') ? 'Joystick move · tap zones · Interact button' : 'WASD move · E interact'} · Same save as bot</p>
     </div>
   `;
 
