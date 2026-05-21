@@ -4,7 +4,26 @@ import { setAccessToken, setDevAuth } from '../api/client.js';
 const CLIENT_ID = import.meta.env.VITE_DISCORD_CLIENT_ID || '';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3848';
 
+function authFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('discord_id');
+  if (!id) return null;
+  const username = params.get('username') || 'Sorcerer';
+  setDevAuth(id, username);
+  localStorage.setItem('jjk_dev_id', id);
+  localStorage.setItem('jjk_dev_name', username);
+  params.delete('discord_id');
+  params.delete('username');
+  const rest = params.toString();
+  const path = window.location.pathname + (rest ? `?${rest}` : '') + window.location.hash;
+  window.history.replaceState({}, '', path);
+  return { id, username, dev: true, fromWeb: true };
+}
+
 export async function authenticate() {
+  const fromUrl = authFromUrl();
+  if (fromUrl) return fromUrl;
+
   if (import.meta.env.VITE_DEV_DISCORD_ID) {
     const id = import.meta.env.VITE_DEV_DISCORD_ID;
     const name = import.meta.env.VITE_DEV_USERNAME || 'DevPlayer';

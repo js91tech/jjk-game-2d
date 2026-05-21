@@ -34,6 +34,8 @@ npm run dev
 
 Open http://localhost:5173 — desktop: **WASD** + **E**; phone: **joystick** + **Interact** + tap purple zones.
 
+Or from the **web dashboard**: click **Play 2D mode** (uses `/play/2d` → passes your logged-in Discord ID). Requires API `ALLOW_DEV_AUTH=true` for local dev.
+
 ## Play on Discord mobile
 
 Discord Activities run on **iOS and Android** in voice channels (rocket icon → your Activity).
