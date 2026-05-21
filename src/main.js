@@ -3,6 +3,7 @@ import { authenticate } from './discord/auth.js';
 import { initHud, refreshMe, loadCrimes, setState } from './ui/hud.js';
 import { BootScene } from './scenes/BootScene.js';
 import { HubScene } from './scenes/HubScene.js';
+import { GymScene, HospitalScene, PrisonScene, OfficeScene } from './scenes/InteriorScene.js';
 import { mountTouchControls, isTouchDevice, isDiscordMobile } from './input/touch.js';
 
 async function boot() {
@@ -15,7 +16,7 @@ async function boot() {
 
   try {
     await authenticate();
-    await refreshMe();
+    const me = await refreshMe();
     await loadCrimes();
     initHud();
     status.remove();
@@ -29,14 +30,27 @@ async function boot() {
     window.addEventListener('jjk:toast', (e) => {
       setState({ message: e.detail?.message || '' });
     });
+    window.addEventListener('jjk:goto', (e) => {
+      const scene = e.detail?.scene;
+      const game = window.__jjkGame;
+      if (game?.scene?.keys?.[scene]) game.scene.start(scene);
+    });
 
-    new Phaser.Game({
+    const startScene = me.confinement?.confined
+      ? me.confinement.reason === 'jail'
+        ? 'Prison'
+        : 'Hospital'
+      : 'Hub';
+    window.__jjkStartScene = startScene;
+    window.__jjkConfinement = me.confinement;
+
+    const game = new Phaser.Game({
       type: Phaser.AUTO,
       parent: 'game',
       width: 768,
       height: 576,
       backgroundColor: '#080810',
-      scene: [BootScene, HubScene],
+      scene: [BootScene, HubScene, GymScene, HospitalScene, PrisonScene, OfficeScene],
       render: {
         antialias: true,
         pixelArt: false,
@@ -57,6 +71,9 @@ async function boot() {
       dom: { createContainer: false },
       banner: false
     });
+    window.__jjkGame = game;
+    game.registry.set('startScene', startScene);
+    game.registry.set('confinement', me.confinement);
   } catch (err) {
     status.textContent = `Failed: ${err.message}. Start API: npm run start:api (in jjkbot)`;
     console.error(err);

@@ -94,9 +94,12 @@ export class HubScene extends Phaser.Scene {
 
   setupZones() {
     this.interactZones = [
-      { x: 8, y: 3, label: 'Training Grounds', action: 'train', color: 0x22d3ee },
+      { x: 8, y: 3, label: 'Enter Gym', action: 'enter-gym', color: 0x22d3ee },
       { x: 12, y: 6, label: 'Mission Board', action: 'crime', color: 0xa855f7 },
-      { x: 4, y: 8, label: 'Domain Gate', action: 'move', color: 0xfbbf24 }
+      { x: 10, y: 9, label: 'Company Office', action: 'enter-office', color: 0xfbbf24 },
+      { x: 4, y: 8, label: 'Domain Gate', action: 'move', color: 0xa855f7 },
+      { x: 2, y: 5, label: 'Infirmary', action: 'enter-hospital', color: 0x34d399 },
+      { x: 14, y: 5, label: 'Prison Realm', action: 'enter-prison', color: 0xef4444 }
     ];
     this.zoneSprites = [];
 
@@ -224,7 +227,11 @@ export class HubScene extends Phaser.Scene {
       'train-def': 0x34d399,
       work: 0xfbbf24,
       attack: 0xf97316,
-      move: 0xa855f7
+      move: 0xa855f7,
+      'enter-gym': 0x22d3ee,
+      'enter-office': 0xfbbf24,
+      'enter-hospital': 0x34d399,
+      'enter-prison': 0xef4444
     };
     const color = colors[action] || 0x7c3aed;
     this.flash.setFillStyle(color);
@@ -332,10 +339,17 @@ export class HubScene extends Phaser.Scene {
 
   async triggerZone(z) {
     try {
+      if (z.action === 'enter-gym') return this.scene.start('Gym');
+      if (z.action === 'enter-office') return this.scene.start('Office');
+      if (z.action === 'enter-hospital') return this.scene.start('Hospital');
+      if (z.action === 'enter-prison') return this.scene.start('Prison');
+
       let r;
-      if (z.action === 'train') r = await api.train('strength', 3);
-      else if (z.action === 'crime') r = await api.crime('petty_cleanup');
-      else if (z.action === 'move') r = await api.move('north');
+      if (z.action === 'crime') {
+        const sel = document.getElementById('crime-select');
+        const mission = sel?.value || 'petty_cleanup';
+        r = await api.crime(mission);
+      } else if (z.action === 'move') r = await api.move('north');
       window.dispatchEvent(
         new CustomEvent('jjk:toast', { detail: { message: r.message, ok: r.ok !== false } })
       );

@@ -63,12 +63,19 @@ function renderHud() {
         <button data-action="escape-pay">Pay bail / bill</button>
         <button data-action="escape-ce">CE heal</button>
       </div>` : ''}
-      <p class="hint">${document.body.classList.contains('touch-mode') ? 'Joystick move · tap zones · Interact button' : 'WASD move · E interact'} · Same save as bot</p>
+      <p class="hint">${document.body.classList.contains('touch-mode') ? 'Joystick · tap zones · Interact' : 'WASD · E interact'} · Enter Gym / Office / Infirmary on map</p>
+      ${state.confinement?.confined ? `<div class="hud-actions">
+        <button data-goto="${state.confinement.reason === 'jail' ? 'Prison' : 'Hospital'}">Open ${state.confinement.reason === 'jail' ? 'Prison' : 'Infirmary'} room</button>
+      </div>` : ''}
     </div>
   `;
 
   el.querySelectorAll('[data-action]').forEach((btn) => {
     btn.onclick = () => handleAction(btn.dataset.action);
+  });
+  el.querySelectorAll('[data-goto]').forEach((btn) => {
+    btn.onclick = () =>
+      window.dispatchEvent(new CustomEvent('jjk:goto', { detail: { scene: btn.dataset.goto } }));
   });
 }
 
