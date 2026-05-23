@@ -75,7 +75,10 @@ async function boot() {
     game.registry.set('startScene', startScene);
     game.registry.set('confinement', me.confinement);
   } catch (err) {
-    status.textContent = `Failed: ${err.message}. Check jjk-api is online and Discord URL Mapping /api → your-api.up.railway.app`;
+    const hint = err.message?.includes('OAuth') || err.message?.includes('DISCORD')
+      ? err.message
+      : `${err.message}. API mapping /api → jjk-api; OAuth redirect http://127.0.0.1/callback; jjk-api DISCORD_CLIENT_SECRET`;
+    status.textContent = `Failed: ${hint}`;
     console.error(err);
   }
 }
