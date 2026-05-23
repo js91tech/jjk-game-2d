@@ -1,10 +1,16 @@
 import { getApiBase } from './baseUrl.js';
 
 let accessToken = null;
+let sessionToken = null;
 let devHeaders = {};
 
 export function setAccessToken(token) {
   accessToken = token;
+}
+
+/** Prefer session token from /v1/auth/code (works reliably through Discord proxy). */
+export function setSessionToken(token) {
+  sessionToken = token;
 }
 
 export function setDevAuth(discordId, username) {
@@ -16,7 +22,12 @@ async function request(path, options = {}) {
     'Content-Type': 'application/json',
     ...devHeaders
   };
-  if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
+  if (sessionToken) {
+    headers.Authorization = `Bearer ${sessionToken}`;
+    headers['X-JJK-Session'] = sessionToken;
+  } else if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`;
+  }
 
   const res = await fetch(`${getApiBase()}${path}`, { ...options, headers });
   const data = await res.json().catch(() => ({}));
