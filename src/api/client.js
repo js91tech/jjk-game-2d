@@ -22,14 +22,22 @@ async function request(path, options = {}) {
     'Content-Type': 'application/json',
     ...devHeaders
   };
+  let method = options.method || 'GET';
+  let body = options.body;
+
   if (sessionToken) {
     headers.Authorization = `Bearer ${sessionToken}`;
     headers['X-JJK-Session'] = sessionToken;
+    if (method === 'GET') {
+      method = 'POST';
+      const payload = body ? JSON.parse(body) : {};
+      body = JSON.stringify({ ...payload, session_token: sessionToken });
+    }
   } else if (accessToken) {
     headers.Authorization = `Bearer ${accessToken}`;
   }
 
-  const res = await fetch(`${getApiBase()}${path}`, { ...options, headers });
+  const res = await fetch(`${getApiBase()}${path}`, { ...options, method, headers, body });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     throw new Error(data.message || `API ${res.status}`);

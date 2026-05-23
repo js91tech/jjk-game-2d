@@ -15,9 +15,20 @@ async function boot() {
   document.getElementById('hud').appendChild(status);
 
   try {
-    await authenticate();
-    const me = await refreshMe();
-    await loadCrimes();
+    const auth = await authenticate();
+    let me;
+    if (auth.bootstrap?.player) {
+      setState({
+        player: auth.bootstrap.player,
+        status: auth.bootstrap.status,
+        confinement: auth.bootstrap.confinement,
+        crimes: auth.bootstrap.crimes || []
+      });
+      me = auth.bootstrap;
+    } else {
+      me = await refreshMe();
+      await loadCrimes();
+    }
     initHud();
     status.remove();
 
