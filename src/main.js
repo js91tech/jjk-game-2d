@@ -25,6 +25,10 @@ async function boot() {
         crimes: auth.bootstrap.crimes || []
       });
       me = auth.bootstrap;
+    } else if (auth.dev) {
+      throw new Error(
+        'Dev login is disabled on production API. Remove VITE_DEV_DISCORD_ID from Railway jjk-game-2d variables and redeploy.'
+      );
     } else {
       me = await refreshMe();
       await loadCrimes();
