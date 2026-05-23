@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3848';
+import { getApiBase } from './baseUrl.js';
 
 let accessToken = null;
 let devHeaders = {};
@@ -18,7 +18,7 @@ async function request(path, options = {}) {
   };
   if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
 
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const res = await fetch(`${getApiBase()}${path}`, { ...options, headers });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     throw new Error(data.message || `API ${res.status}`);

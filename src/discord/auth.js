@@ -1,8 +1,8 @@
 import { DiscordSDK } from '@discord/embedded-app-sdk';
 import { setAccessToken, setDevAuth } from '../api/client.js';
+import { getApiBase } from '../api/baseUrl.js';
 
 const CLIENT_ID = import.meta.env.VITE_DISCORD_CLIENT_ID || '';
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3848';
 
 function authFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -42,7 +42,7 @@ export async function authenticate() {
         prompt: 'none',
         scope: ['identify']
       });
-      const res = await fetch(`${API_URL}/v1/auth/code`, {
+      const res = await fetch(`${getApiBase()}/v1/auth/code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code })

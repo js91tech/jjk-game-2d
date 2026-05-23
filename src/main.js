@@ -75,7 +75,7 @@ async function boot() {
     game.registry.set('startScene', startScene);
     game.registry.set('confinement', me.confinement);
   } catch (err) {
-    status.textContent = `Failed: ${err.message}. Start API: npm run start:api (in jjkbot)`;
+    status.textContent = `Failed: ${err.message}. Check jjk-api is online and Discord URL Mapping /api → your-api.up.railway.app`;
     console.error(err);
   }
 }
